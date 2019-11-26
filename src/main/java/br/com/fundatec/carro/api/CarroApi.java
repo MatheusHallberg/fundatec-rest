@@ -19,9 +19,12 @@ public class CarroApi {
     }
 
     @GetMapping("carros")
-    public ResponseEntity<List<String>> getCarro(@RequestParam(required = false) String nome) {
-        List<String> carros = (carroService.listarCarros());
-        System.out.println(nome);
+    public ResponseEntity<List<String>> getCarro(@RequestParam(required = false, defaultValue = "") String nome) {
+        List<String> carros = (carroService.listarCarros(nome));
+        if(carros.size() == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(carros);
+        }
         return ResponseEntity.ok(carros);
     }
 }
