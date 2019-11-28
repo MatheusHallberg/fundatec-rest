@@ -1,5 +1,6 @@
 package br.com.fundatec.carro.repository;
 
+import br.com.fundatec.carro.model.Carro;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,20 +10,28 @@ import java.util.List;
 @Repository
 public class CarroRepository {
 
-    public List<String> listarCarros(String nome) {
-        List<String> carros = Arrays.asList("Mustang",
-                "Camaro",
-                "Uno",
-                "Celta");
+    public List<Carro> listarCarros(String nome) {
+        List<Carro> listaResultado = new ArrayList<>();
 
-        List<String> listaResultado = new ArrayList<>();
-
-        for(String carro: carros) {
-            if (carro.toLowerCase().contains(nome.toLowerCase())) {
+        for (Carro carro : listaCarros) {
+            if (carro.getNome().toLowerCase().contains(nome.toLowerCase())) {
                 listaResultado.add(carro);
             }
         }
         return listaResultado;
     }
 
+    public Carro consultar(Long id) {
+        for (Carro carro : listaCarros) {
+            if (carro.getId().equals(id)) {
+                return carro;
+            }
+        }
+        return null;
+    }
+
+    private static List<Carro> listaCarros = Arrays.asList(
+            new Carro(1L, "Mustang", "MAX1000"),
+            new Carro(2L, "Uno com Escada", "ABC1234"),
+            new Carro(3L, "Chevette", "ASD1234"));
 }
