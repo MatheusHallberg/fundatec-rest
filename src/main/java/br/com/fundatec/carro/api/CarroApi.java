@@ -1,5 +1,6 @@
 package br.com.fundatec.carro.api;
 
+import br.com.fundatec.carro.mapper.CarroMapper;
 import br.com.fundatec.carro.model.Carro;
 import br.com.fundatec.carro.service.CarroService;
 import org.springframework.http.ResponseEntity;
@@ -8,16 +9,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class CarroApi {
 
     private final CarroService carroService;
+    private final CarroMapper carroMapper;
 
-    public CarroApi(CarroService carroService) {
+    public CarroApi(CarroService carroService, CarroMapper carroMapper) {
         this.carroService = carroService;
+        this.carroMapper = carroMapper;
     }
 
     @GetMapping("/carros")
@@ -26,26 +28,17 @@ public class CarroApi {
         if (carros.size() == 0) {
             return ResponseEntity.noContent().build();
         }
-        List<CarroOutputDto> carrosOutputDto = new ArrayList<>();
-        for (Carro carro : carros) {
-            carrosOutputDto.add(converter(carro));
-        }
+        List<CarroOutputDto> carrosOutputDto = carroMapper.mapear(carros);
         return ResponseEntity.ok(carrosOutputDto);
     }
 
-    private CarroOutputDto converter(Carro carro) {
-        CarroOutputDto carroOutputDto = new CarroOutputDto();
-        carroOutputDto.setId(carro.getId());
-        carroOutputDto.setNome(carro.getNome());
-        return carroOutputDto;
-    }
-
     @GetMapping("/carros/{id}")
-    public ResponseEntity<Carro> getCarro(@PathVariable Long id) {
+    public ResponseEntity<CarroOutputDto> getCarro(@PathVariable Long id) {
         Carro carro = carroService.consultar(id);
-        if (carro == null) {
-            return ResponseEntity.noContent().build();
+        if (carro != null) {
+            CarroOutputDto carroOutputDto = carroMapper.mapear(carro);
+            return ResponseEntity.ok(carroOutputDto);
         }
-        return ResponseEntity.ok(carro);
+        return ResponseEntity.noContent().build();
     }
 }
