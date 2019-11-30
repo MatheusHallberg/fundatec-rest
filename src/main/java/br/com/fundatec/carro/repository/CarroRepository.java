@@ -34,4 +34,10 @@ public class CarroRepository {
             new Carro(1L, "Mustang", "MAX1000"),
             new Carro(2L, "Uno com Escada", "ABC1234"),
             new Carro(3L, "Chevette", "ASD1234"));
+
+    public Carro incluir(Carro carro) {
+        carro.setId(new Long(listaCarros.size() + 1));
+        listaCarros.add(carro);
+        return carro;
+    }
 }
